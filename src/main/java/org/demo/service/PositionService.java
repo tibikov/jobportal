@@ -1,9 +1,12 @@
 package org.demo.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.validation.constraints.Size;
 
 import org.demo.model.Position;
 import org.demo.repo.PositionRepository;
@@ -19,15 +22,11 @@ public class PositionService {
 
 	Logger logger = LoggerFactory.getLogger(ClientService.class);
 
+	@PersistenceContext
+	private EntityManager entityManager;
+
 	@Autowired
 	private PositionRepository positionRepository;
-
-	public List<Position> searchPositions(String keyWord, String location) {
-		ArrayList<Position> result = new ArrayList<>();
-		String resStr = result.stream().map(Object::toString).collect(Collectors.joining(", "));
-		logger.info("Positions found for keyWord: '{}' and location: '{}' are: {}", keyWord, location, resStr);
-		return result;
-	}
 
 	public Position getPosition(Long id) {
 		Position result = positionRepository.findById(id).orElse(null);
@@ -43,5 +42,20 @@ public class PositionService {
 
 	public List<Position> getAll() {
 		return StreamSupport.stream(positionRepository.findAll().spliterator(), false).collect(Collectors.toList());
+	}
+
+	public List<Position> searchPositions(String keyWord, String location) {
+		List<Position> result = entityManager.createNamedQuery("findAllPositionsWithNameAndLocation", Position.class)
+				.setParameter("pName", keyWord).setParameter("pLocation", location).getResultList();
+
+		String resStr = result.stream().map(Object::toString).collect(Collectors.joining(", "));
+		logger.info("Positions found for keyWord: '{}' and location: '{}' are: {}", keyWord, location, resStr);
+		return result;
+	}
+
+	public List<String> searchPositionsAsUrl(@Size(max = 50) String keyword, @Size(max = 50) String location,
+			String positionsBaseUrl) {
+		return searchPositions(keyword, location).stream().map(position -> positionsBaseUrl + position.getId())
+				.collect(Collectors.toList());
 	}
 }

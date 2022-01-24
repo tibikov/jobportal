@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -23,7 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
+@Validated
 public class JobportalApiController {
+
+	private static final String POSITIONS_BASE_URL = "http://localhost:8085/positions?id=";
 
 	@Autowired
 	private ClientService clientService;
@@ -47,7 +51,7 @@ public class JobportalApiController {
 		if (!clientService.isValidApiKey(apiKey)) {
 			throw new JobportalInvalidApikeyException(apiKey);
 		}
-		return new ResponseEntity<>("http://localhost:8085/positions?id=" + positionService.save(position).getId(),
+		return new ResponseEntity<>(POSITIONS_BASE_URL + positionService.save(position).getId(),
 				HttpStatus.OK);
 	}
 
@@ -65,13 +69,14 @@ public class JobportalApiController {
 	}
 
 	@GetMapping(path = "/search")
-	public ResponseEntity<List<Position>> search(@RequestHeader("api-key") String apiKey,
-			@RequestParam @NotBlank @Size(max = 50) String keyWord,
-			@RequestParam @NotBlank @Size(max = 50) String location) {
+	public ResponseEntity<List<String>> search(@RequestHeader("api-key") String apiKey,
+			@RequestParam @Size(max = 50) String keyword,
+			@RequestParam @Size(max = 50) String location) {
 		if (!clientService.isValidApiKey(apiKey)) {
 			throw new JobportalInvalidApikeyException(apiKey);
 		}
-		return new ResponseEntity<>(positionService.searchPositions(keyWord, location), HttpStatus.OK);
+		List<String> positionUrls = positionService.searchPositionsAsUrl(keyword, location, POSITIONS_BASE_URL);				
+		return new ResponseEntity<>(positionUrls, HttpStatus.OK);
 	}
 
 }

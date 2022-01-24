@@ -8,7 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.NamedQuery;
+
 @Entity
+@NamedQuery(name = "findAllPositionsWithNameAndLocation",
+		query = "select p from Position p where lower(p.name) like lower(concat('%',:pName,'%')) AND lower(p.location) like lower(concat('%',:pLocation,'%'))")
 public class Position {
 
 	@Id
