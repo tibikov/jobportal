@@ -6,14 +6,21 @@ Register client applications, post and search positions. Using in memory databas
 
 ![API](./Jobportal.png)
 
-## Building application
+## Building and starting the application
 
 ### Pre-requisites
 - JDK 11+
 - maven 3
 - gitbash
 
-### Building Executable JAR
+### Using spring-boot:run
+We can build and start the application using the mvn wrapper and spring-boot:run
+
+```sh
+$ ./mvnw spring-boot:run
+```
+
+### Building executable JAR
 To create executable jar ``target/jobportal-1.0.0.jar`` , simply run:
 
 ```sh
