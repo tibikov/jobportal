@@ -1,9 +1,7 @@
 package org.demo.api;
 
-import java.util.HashSet;
 import java.util.List;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -46,14 +44,18 @@ public class JobportalApiController {
 	@PostMapping(path = "/positions", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
 	public ResponseEntity<String> postPosition(@RequestHeader("api-key") String apiKey,
 			@RequestBody Position position) {
-		if(!clientService.isValidApiKey(apiKey)) {
-			throw new ConstraintViolationException("Header api-key is invalid", new HashSet<>());
+		if (!clientService.isValidApiKey(apiKey)) {
+			throw new JobportalInvalidApikeyException(apiKey);
 		}
-		return new ResponseEntity<>("http://localhost:8085/positions?id=" + positionService.save(position).getId(), HttpStatus.OK);
+		return new ResponseEntity<>("http://localhost:8085/positions?id=" + positionService.save(position).getId(),
+				HttpStatus.OK);
 	}
 
 	@GetMapping(path = "/positions")
-	public ResponseEntity<Position> getPosition(@RequestParam Long id) { //@RequestHeader("api-key") String apiKey,
+	public ResponseEntity<Position> getPosition(@RequestHeader("api-key") String apiKey, @RequestParam Long id) {
+		if (!clientService.isValidApiKey(apiKey)) {
+			throw new JobportalInvalidApikeyException(apiKey);
+		}
 		return new ResponseEntity<>(positionService.getPosition(id), HttpStatus.OK);
 	}
 
@@ -63,9 +65,12 @@ public class JobportalApiController {
 	}
 
 	@GetMapping(path = "/search")
-	public ResponseEntity<List<Position>> search(@Valid @RequestHeader("api-key") String apiKey,
+	public ResponseEntity<List<Position>> search(@RequestHeader("api-key") String apiKey,
 			@RequestParam @NotBlank @Size(max = 50) String keyWord,
 			@RequestParam @NotBlank @Size(max = 50) String location) {
+		if (!clientService.isValidApiKey(apiKey)) {
+			throw new JobportalInvalidApikeyException(apiKey);
+		}
 		return new ResponseEntity<>(positionService.searchPositions(keyWord, location), HttpStatus.OK);
 	}
 

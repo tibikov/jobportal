@@ -8,36 +8,43 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Entity
+@Table(name = "clients", uniqueConstraints = {
+		@UniqueConstraint(name = "client_email_unique", columnNames = { "email" }) })
 public class Client {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-		    
-    private String apiKey = UUID.randomUUID().toString();
-	
+
+	private String apiKey = UUID.randomUUID().toString();
+
 	@NotEmpty(message = "Client name must not be empty")
-	@Size(max = 100)
+	@Size(min = 2, max = 100)
 	private String name;
-	
+
 	@NotEmpty(message = "Email must not be empty")
 	@Email(message = "Email must be a valid email address")
-	@Column(unique=true)
+	@Pattern(regexp = ".+@.+\\..+", message = "Please provide a valid email address")
+	@Column(name = "email" /* , unique = true */)
 	private String email;
-	
-	public Client() {}
-	
+
+	public Client() {
+	}
+
 	public Client(String name, String email, String apiKey) {
 		this.name = name;
 		this.email = email;
 		this.apiKey = apiKey;
 	}
-		
+
 	public Long getId() {
 		return id;
 	}
@@ -92,5 +99,5 @@ public class Client {
 	public String toString() {
 		return "Client [id=" + id + ", apiKey=" + apiKey + ", name=" + name + ", email=" + email + "]";
 	}
-	
+
 }

@@ -15,14 +15,15 @@ public class Position {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Size(max = 50)
+	@Size(min = 2, max = 50)
 	String name;
 
-	@Size(max = 50)
+	@Size(min = 2, max = 50)
 	String location;
-	
-	public Position() {}
-	
+
+	public Position() {
+	}
+
 	public Position(String name, String location) {
 		this.name = name;
 		this.location = location;
@@ -66,8 +67,7 @@ public class Position {
 		if (getClass() != obj.getClass())
 			return false;
 		Position other = (Position) obj;
-		return id == other.id && Objects.equals(location, other.location)
-				&& Objects.equals(name, other.name);
+		return id == other.id && Objects.equals(location, other.location) && Objects.equals(name, other.name);
 	}
 
 	@Override

@@ -56,6 +56,11 @@ class JobportalApplicationTests {
 		assertNotNull(content);
 		assertTrue(isUUID(new String(content, StandardCharsets.UTF_8)));
 	}
+	
+//	@Test
+//	public void testWrongEmail() {
+//		
+//	}
 
 //	@Test
 //	public void testSearch() {
