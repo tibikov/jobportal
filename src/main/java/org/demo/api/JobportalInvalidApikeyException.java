@@ -6,7 +6,7 @@ public class JobportalInvalidApikeyException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public JobportalInvalidApikeyException(String apiKey) {		
+	public JobportalInvalidApikeyException(String apiKey) {
 		this.apiKey = apiKey;
 	}
 

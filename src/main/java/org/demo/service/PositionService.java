@@ -6,7 +6,6 @@ import java.util.stream.StreamSupport;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.validation.constraints.Size;
 
 import org.demo.model.Position;
 import org.demo.repo.PositionRepository;
@@ -15,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 @Transactional
@@ -53,9 +53,9 @@ public class PositionService {
 		return result;
 	}
 
-	public List<String> searchPositionsAsUrl(@Size(max = 50) String keyword, @Size(max = 50) String location,
-			String positionsBaseUrl) {
-		return searchPositions(keyword, location).stream().map(position -> positionsBaseUrl + position.getId())
+	public List<String> searchPositionsAsUrl(String keyword, String location,
+			String positionBaseUri) {		
+		return searchPositions(keyword, location).stream().map(position -> positionBaseUri + "=" + position.getId())
 				.collect(Collectors.toList());
 	}
 }

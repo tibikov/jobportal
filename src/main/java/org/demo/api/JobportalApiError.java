@@ -37,5 +37,4 @@ public class JobportalApiError {
 		return errors;
 	}
 
-	
 }

@@ -15,34 +15,32 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ClientService {
-	
+
 	Logger logger = LoggerFactory.getLogger(ClientService.class);
-	
+
 	@Autowired
 	private ClientRepository clientRepository;
-	
+
 	public String save(Client client) {
 		String apiKey = clientRepository.save(client).getApiKey();
 		logger.info("Client {} saved", client);
 		return apiKey;
 	}
-	
+
 	public Client findByEmail(String email) {
 		logger.info("Searching by email: {}", email);
 		return clientRepository.findByEmail(email);
 	}
-	
+
 	public List<Client> getAll() {
 		logger.info("Getting all clients");
 		return StreamSupport.stream(clientRepository.findAll().spliterator(), false).collect(Collectors.toList());
 	}
-	
-	public boolean isValidApiKey(String apiKey) {		
+
+	public boolean isValidApiKey(String apiKey) {
 		boolean valid = apiKey != null && clientRepository.findByApiKey(apiKey) != null;
 		logger.info("Checked apiKey {}, it is {}", apiKey, valid ? "valid" : "invalid");
 		return valid;
 	}
-	
+
 }
-
-

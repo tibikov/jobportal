@@ -16,8 +16,8 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "clients", uniqueConstraints = {
-		@UniqueConstraint(name = "client_email_unique", columnNames = { "email" }) })
+@Table(name = "clients",
+		uniqueConstraints = { @UniqueConstraint(name = "client_email_unique", columnNames = { "email" }) })
 public class Client {
 
 	@Id
