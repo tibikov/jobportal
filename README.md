@@ -1,8 +1,8 @@
-#Jobportal Demo Application in Java
+# Jobportal Demo Application in Java
 
 Register client applications, post and search positions. Using in memory database and swagger-ui. 
 
-##API definition
+## API definition
 
 ![API](./Jobportal.png)
 
