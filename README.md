@@ -17,11 +17,11 @@ Register client applications, post and search positions. Using in memory databas
 We can build and start the application using the mvn wrapper and spring-boot:run
 
 ```sh
-$ ./mvnw spring-boot:run
+mvnw spring-boot:run
 ```
 
 ### Building executable JAR
-To create executable jar ``target/jobportal-1.0.0.jar`` , simply run:
+To create executable jar ``target/jobportal-1.0.0.jar`` , simply run
 
 ```sh
 mvn clean package
@@ -69,13 +69,13 @@ curl -X GET 'http://localhost:8085/search?keyword=queen&location=London' -H 'api
 ## Future improvements
 ### Functional improvements
 - Implement Post/Redirect/Get flow to avoid duplicated form submissions
-- Enrich (position descriptions, tags, links) and extend datamodel (applicants and applicatoins), use real database
+- Enrich (position descriptions, tags, links) and extend datamodel (applicants and applications), use real database
 - Use (for example) Keycloak and OpenID Connect for identity management and to secure the application
 
 ### Development and deployment
 - Setup Jenkins for continuous development and integration
 - Setup Sonar for static code analysis
-- Setup and use docker images and cloud deployment of new releases
+- Setup and use docker images and cloud deployment of new builds/releases
 
 ### Maintenance and Operation
 - Improved monitoring with opentelemetry and Datadog
