@@ -66,3 +66,17 @@ To search positions
 ```sh
 curl -X GET 'http://localhost:8085/search?keyword=queen&location=London' -H 'api-key: 1babfc4d-5de7-4dbc-a882-3b24c773016c'
 ```
+## Future improvements
+### Functional improvements
+- Implement Post/Redirect/Get flow to avoid duplicated form submissions
+- Enrich (position descriptions, tags, links) and extend datamodel (applicants and applicatoins), use real database
+- Use (for example) Keycloak and OpenID Connect for identity management and to secure the application
+
+### Development and deployment
+- Setup Jenkins for continuous development and integration
+- Setup Sonar for static code analysis
+- Setup and use docker images and cloud deployment of new releases
+
+### Maintenance and Operation
+- Improved monitoring with opentelemetry and Datadog
+
