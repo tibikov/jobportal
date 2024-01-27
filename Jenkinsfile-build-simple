@@ -10,7 +10,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Get some code from a GitHub repository
-                git url: 'git@github.com:tibikov/jobportal.git', credentialsId: 'tibikov-build'
+                // git url: 'git@github.com:tibikov/jobportal.git', credentialsId: 'tibikov-build'
 
                 // Run Maven on a Unix agent.
                 sh "mvn clean package"
