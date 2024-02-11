@@ -1,20 +1,15 @@
 pipeline {
     agent any
 
-    tools {
-        git 'Default'
-    }
-
-
-	options {
-		disableConcurrentBuilds()
-        skipDefaultCheckout()
-        timestamps()
-        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+    options {
+      disableConcurrentBuilds()
+      skipDefaultCheckout()
+      timestamps()
+      buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
 	}
 
     parameters {
-        gitParameter branchFilter: 'origin/(.*)', defaultValue: 'main', name: 'BRANCH_NAME', type: 'PT_BRANCH', sortMode: 'ASCENDING_SMART'
+        gitParameter branchFilter: 'origin/(.*)', defaultValue: 'main', selectedValue: 'DEFAULT', name: 'BRANCH_NAME', type: 'PT_BRANCH', sortMode: 'ASCENDING_SMART'
         booleanParam(name: 'CLEAN_BUILD', defaultValue: true, description: 'Clean Build')
         booleanParam(name: 'SKIP_TESTS', defaultValue: true, description: 'Skip JUnit and UI Tests')
     }
@@ -37,17 +32,17 @@ pipeline {
                 }
             }
         }
-		stage('start') {
-			steps {
-				script {
+        stage('Start') {
+            steps {
+                script {
                     if(isUnix()){
-                        sh 'java -jar target/jobportal-1.0.0.jar'
+                        sh 'pkill -f jobportal || true'
+                        sh 'daemonize -E JENKINS_NODE_COOKIE=dontKillMe /opt/java/openjdk/bin/java -jar  /var/jenkins_home/workspace/Jobportal/target/jobportal-1.0.0.jar'
                     } else {
-                        bat 'java -jar target/jobportal-1.0.0.jar'
+                        bat 'start /b java -jar target/jobportal-1.0.0.jar'
                     }
-
-				}
-			}
-		}
+                }
+            }
+        }
     }
 }
