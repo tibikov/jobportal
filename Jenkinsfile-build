@@ -1,0 +1,43 @@
+CUSTOM_WORKSPACE = "${env.BUILD_WS_ROOT}/${env.JOB_NAME}"
+
+pipeline {
+    agent any
+
+    tools {
+        jdk 'temurinjdk17'
+        maven 'Maven363'
+        nodejs 'Node18'
+        allure 'allure-2.21.0'
+    }
+	parameters {
+		gitParameter branchFilter: 'origin/(.*)', defaultValue: 'main', name: 'BRANCH', type: 'PT_BRANCH'
+        booleanParam(name: 'CLEAN_BUILD', defaultValue: true, description: 'Clean Build')
+        booleanParam(name: 'SKIP_TESTS', defaultValue: true, description: 'Skip JUnit and UI Tests')
+	}
+
+    stages {
+        stage('Build') {
+            steps {
+                // Get some code from a GitHub repository
+                git credentialsId: 'bldinowio-accesstoken', url: 'https://github.com/tibikov/jobportal.git', branch: '${params.BRANCH_NAME}'
+                script {
+                    if(isUnix()) {
+                        // Run Maven on a Unix agent.
+                        sh "mvn clean package"
+                    } else {
+                        // To run Maven on a Windows agent, use
+                        sh "mvn clean package"
+                    }
+                }
+            }
+        }
+    }
+    post {
+        // If Maven was able to run the tests, even if some of the test
+        // failed, record the test results and archive the jar file.
+        success {
+            junit '**/target/surefire-reports/TEST-*.xml'
+            archiveArtifacts 'target/*.jar'
+        }
+    }
+}

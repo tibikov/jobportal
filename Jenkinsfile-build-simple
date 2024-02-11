@@ -2,29 +2,52 @@ pipeline {
     agent any
 
     tools {
-        // Install the Maven version configured as "M3" and add it to the path.
-        maven 'Maven363'
+        git 'Default'
+    }
+
+
+	options {
+		disableConcurrentBuilds()
+        skipDefaultCheckout()
+        timestamps()
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+	}
+
+    parameters {
+        gitParameter branchFilter: 'origin/(.*)', defaultValue: 'main', name: 'BRANCH_NAME', type: 'PT_BRANCH', sortMode: 'ASCENDING_SMART'
+        booleanParam(name: 'CLEAN_BUILD', defaultValue: true, description: 'Clean Build')
+        booleanParam(name: 'SKIP_TESTS', defaultValue: true, description: 'Skip JUnit and UI Tests')
     }
 
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                // Get some code from a GitHub repository
-                // git url: 'git@github.com:tibikov/jobportal.git', credentialsId: 'tibikov-build'
-
-                // Run Maven on a Unix agent.
-                sh "mvn clean package"
+                git url:'https://github.com/tibikov/jobportal.git', credentialsId:'tibikov-build', branch:'${BRANCH_NAME}'
 
             }
-
-            post {
-                // If Maven was able to run the tests, even if some of the test
-                // failed, record the test results and archive the jar file.
-                success {
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts 'target/*.jar'
+        }
+        stage('Build') {
+            steps {
+                script {
+                    if(isUnix()){
+                        sh 'mvn clean package'
+                    } else {
+                        bat 'mvn clean package'
+                    }
                 }
             }
         }
+		stage('start') {
+			steps {
+				script {
+                    if(isUnix()){
+                        sh 'java -jar target/jobportal-1.0.0.jar'
+                    } else {
+                        bat 'java -jar target/jobportal-1.0.0.jar'
+                    }
+
+				}
+			}
+		}
     }
 }
