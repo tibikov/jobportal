@@ -6,8 +6,6 @@ pipeline {
     tools {
         jdk 'temurinjdk17'
         maven 'Maven363'
-        nodejs 'Node18'
-        allure 'allure-2.21.0'
     }
 	parameters {
 		gitParameter branchFilter: 'origin/(.*)', defaultValue: 'main', name: 'BRANCH', type: 'PT_BRANCH'
@@ -26,7 +24,7 @@ pipeline {
                         sh "mvn clean package"
                     } else {
                         // To run Maven on a Windows agent, use
-                        sh "mvn clean package"
+                        bat "mvn clean package"
                     }
                 }
             }

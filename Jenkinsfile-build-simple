@@ -8,6 +8,11 @@ pipeline {
       buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
 	}
 
+    tools {
+        jdk 'temurinjdk17'
+        maven 'Maven363'
+    }
+
     parameters {
         gitParameter branchFilter: 'origin/(.*)', defaultValue: 'main', selectedValue: 'DEFAULT', name: 'BRANCH_NAME', type: 'PT_BRANCH', sortMode: 'ASCENDING_SMART'
         booleanParam(name: 'CLEAN_BUILD', defaultValue: true, description: 'Clean Build')
